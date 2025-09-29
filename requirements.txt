@@ -1,15 +1,10 @@
-# --- Núcleo para evitar conflitos de resolução ---
-numpy>=2.1.0,<3
-
-# Streamlit compatível com NumPy 2
+numpy>=2.1,<3
 streamlit>=1.37,<2
 
-# Backend web
 fastapi>=0.104.1
 uvicorn[standard]>=0.24.0.post1
 python-dotenv>=1.0.0
 
-# LangChain (NumPy >= 2.1)
 langchain==0.3.27
 langchain-community==0.3.27
 langchain-core==0.3.75
@@ -21,22 +16,21 @@ langchain-qdrant==0.2.1
 langchain-redis==0.2.3
 langchain-pymupdf4llm==0.4.1
 
-# NLP / Embeddings
-transformers==4.55.4
+# alinhar com llm-guard
+transformers==4.51.3
 sentence-transformers==5.1.0
 fastembed==0.7.3
 
-# Vetores, parsing e utilitários
 faiss-cpu>=1.7.4
 beautifulsoup4>=4.12.2
 pytesseract==0.3.13
 
-# Pydantic (deixe o core vir junto pela própria lib)
 pydantic==2.11.7
 pydantic-settings==2.10.1
 
-# Redis / Guardrails
 redis==6.4.0
 llm-guard==0.3.16
+
+
 
 
