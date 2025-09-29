@@ -1,0 +1,35 @@
+# Para que serve este arquivo:
+# Este arquivo lista as dependências de produção do projeto.
+# Use `uv pip install -r requirements.txt` para instalá-las.
+# Para adicionar uma nova dependência, simplesmente adicione uma nova linha: `nome-da-lib>=versao`.
+
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0.post1
+pydantic>=2.4.2
+python-dotenv>=1.0.0
+
+faiss-cpu>=1.7.4 # ou faiss-gpu para ambientes com GPU
+beautifulsoup4>=4.12.2
+
+langchain==0.3.27
+langchain-community==0.3.27
+langchain-core==0.3.75
+langchain-experimental==0.3.4
+langchain-groq==0.3.8
+langchain-huggingface==0.3.1
+langchain-pymupdf4llm==0.4.1
+langchain-text-splitters==0.3.11
+langchain-qdrant==0.2.1
+transformers==4.51.3 para não dar erro com LLM-Guard
+sentence-transformers==5.1.0
+python-dotenv==1.1.1
+fastembed==0.7.3
+python==3.12.4
+pytesseract==0.3.13
+pydantic==2.11.7
+pydantic_core==2.33.2
+pydantic-settings==2.10.1
+streamlit==1.35.0
+redis==6.4.0
+langchain-redis==0.2.3
+llm-guard==0.3.16
