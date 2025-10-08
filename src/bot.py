@@ -14,7 +14,7 @@ if "messages" not in st.session_state:
 def handle_submit(message):
     with st.spinner('Pensando...'):
         session_id = get_session_id() # <--- CORRIGIDO
-        response = generate_response_with_guardrails(message, session_id) # <--- CORRIGIDO #chama a resposta
+        response = generate_response(message, session_id) # <--- CORRIGIDO #chama a resposta
         write_message('assistant', response) #grava mensagens
 
 # Display messages in Session State
@@ -25,4 +25,5 @@ for message in st.session_state.messages:
 if prompt := st.chat_input("Olá! Como posso ajudar?"): #recebe a entrada do usuario
     write_message('user', prompt)
     handle_submit(prompt)
+
 
