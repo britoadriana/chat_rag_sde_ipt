@@ -1,6 +1,6 @@
 import streamlit as st
 from utils import write_message
-from agent import generate_response # <---Alterado 08.10.25
+from agent import generate_response_with_guardrails # <---Alterado 05.11.25 - colocando guardrails
 from utils import get_session_id 
 
 st.set_page_config("Assistente de cidades inteligentes", page_icon="💡")
@@ -14,7 +14,7 @@ if "messages" not in st.session_state:
 def handle_submit(message):
     with st.spinner('Pensando...'):
         session_id = get_session_id() # <--- CORRIGIDO
-        response = generate_response(message, session_id)  # <---Alterado 08.10.25 
+        response = generate_response_with_guardrails(message, session_id)  # <---Alterado 05.11.25 
         write_message('assistant', response) #grava mensagens
 
 # Display messages in Session State
@@ -25,6 +25,7 @@ for message in st.session_state.messages:
 if prompt := st.chat_input("Olá! Como posso ajudar?"): #recebe a entrada do usuario
     write_message('user', prompt)
     handle_submit(prompt)
+
 
 
 
