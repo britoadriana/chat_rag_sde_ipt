@@ -31,6 +31,5 @@ pydantic-settings==2.10.1
 redis==6.4.0
 llm-guard==0.3.16
 
-
-
-
+Flask==3.1.2
+gunicorn==23.0.0
