@@ -1,11 +1,9 @@
 
 import os
+import uuid
 
 from flask import Flask, request, jsonify
 from agent import generate_response_with_guardrails
-
-# Indicação do diretório do modelo LLM
-# os.chdir("./src")
 
 # Cria a instância da aplicação Flask
 api = Flask(__name__)
@@ -27,7 +25,8 @@ def processar_endpoint():
 
     try:
         # Chama a rotina de processamento com a query recebida
-        response_string = generate_response_with_guardrails(input_query, "1")
+        session_id = str(uuid.uuid4())
+        response_string = generate_response_with_guardrails(input_query, session_id)
 
         # Prepara e retornar a resposta em formato JSON
         return jsonify({"resposta": response_string})
@@ -39,4 +38,4 @@ def processar_endpoint():
 
 # Permite executar o servidor diretamente com 'python api.py'
 if __name__ == '__main__':
-    api.run(host='0.0.0.0', debug=True, port=9592)
+    api.run(host='0.0.0.0', debug=True, port=9593)
