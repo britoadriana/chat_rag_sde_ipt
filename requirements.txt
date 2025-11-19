@@ -1,10 +1,8 @@
+# Dependências básicas
 numpy==2.3.5
-# streamlit==1.51.0
-
-# fastapi==0.121.2
-# uvicorn[standard]==0.38.0
 python-dotenv==1.2.1
 
+# Dependências do langchain
 langchain>=0.3.7,<0.4.0
 langchain-community
 langchain-core
@@ -17,20 +15,25 @@ langchain-redis==0.2.3
 langchain-pymupdf4llm==0.4.1
 langchain-ollama
 
-# alinhar com llm-guard
+# Dependências para alinhar com llm-guard
 transformers==4.51.3
 sentence-transformers==5.1.0
 fastembed==0.7.3
 
-# faiss-cpu== 1.13.0
-# beautifulsoup4==4.14.2
-# pytesseract==0.3.13
-
+# Outras dependências do modelo
 pydantic==2.11.7
 pydantic-settings==2.10.1
-
 redis==6.4.0
 llm-guard==0.3.16
 
+# Dependências para API
 Flask==3.1.2
 gunicorn==23.0.0
+
+# Dependência inutilizadas
+# streamlit==1.51.0
+# fastapi==0.121.2
+# uvicorn[standard]==0.38.0
+# faiss-cpu== 1.13.0
+# beautifulsoup4==4.14.2
+# pytesseract==0.3.13

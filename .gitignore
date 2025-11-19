@@ -4,3 +4,4 @@ src/__pycache__/agent.cpython-312.pyc
 src/__pycache__/llm.cpython-311.pyc
 src/__pycache__/tool_vector.cpython-311.pyc
 src/__pycache__/utils.cpython-311.pyc
+*/model_cache/*
