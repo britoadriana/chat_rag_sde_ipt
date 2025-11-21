@@ -7,15 +7,20 @@ from langchain_core.tools import Tool
 from langchain_redis import RedisChatMessageHistory
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.runnables.history import RunnableWithMessageHistory
+
 from llm import llm
 from tool_vector import find_chunk
 from llm_guard.input_scanners import PromptInjection, Secrets, TokenLimit
 from llm_guard.input_scanners.prompt_injection import MatchType 
 from llm_guard import scan_prompt
-
+import config_db
+ 
 # Carrega as variáveis do arquivo .env
 
 load_dotenv()
+
+config = config_db.ConfigDB()
+env_db, url_bd, api_bd = config.obter_configs(banco_dados="redis")
 
 chat_prompt = ChatPromptTemplate.from_messages(
     [
@@ -49,8 +54,9 @@ tools = [
 def get_memory(session_id: str):
     return RedisChatMessageHistory(
         session_id=session_id,
-        # redis_url=os.getenv("REDIS_URL") # Para Redis em Nuvem
-        redis_url = "redis://10.11.39.33:6379/0" # Para Redis local
+        # redis_url = os.getenv("REDIS_URL") # Para Redis em Nuvem
+        # redis_url = "redis://10.11.39.33:6379/0" # Para Redis local
+        redis_url = url_bd
     )
 
 agent_prompt = PromptTemplate.from_template("""

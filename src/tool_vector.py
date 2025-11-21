@@ -2,21 +2,29 @@ import os
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 from typing import List, Any
-from llm import embedding_model, sparse_embeddings
 from langchain_qdrant import QdrantVectorStore, RetrievalMode # Qdrant
 from qdrant_client import QdrantClient, models# hybrid dense/sparse store Qdrant
 from langchain_core.prompts import ChatPromptTemplate # chains
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
+from llm import embedding_model, sparse_embeddings
+import config_db
+
 # Carrega variáveis de ambiente
 load_dotenv()
+
+config = config_db.ConfigDB()
+env_db, url_bd, api_bd = config.obter_configs(banco_dados="qdrant")
 
 client = QdrantClient(
     # url=os.getenv("QDRANT_URL"), # Para Qdrant em nuvem
     # api_key=os.getenv("QDRANT_API_KEY"), # Para Qdrant em nuvem
-    url="http://10.11.39.33:6333" # Para Qdrant local
+    # url="http://10.11.39.33:6333" # Para Qdrant local
+    url=url_bd,
+    api_key=api_bd
 )
+
 print("Qdrant configurado com sucesso")
 
 # Coleção onde estão os chunks no banco vetorial, mudar para local
