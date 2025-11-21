@@ -49,7 +49,8 @@ tools = [
 def get_memory(session_id: str):
     return RedisChatMessageHistory(
         session_id=session_id,
-        redis_url = "redis://10.11.39.33:6379/0"
+        # redis_url=os.getenv("REDIS_URL") # Para Redis em Nuvem
+        redis_url = "redis://10.11.39.33:6379/0" # Para Redis local
     )
 
 agent_prompt = PromptTemplate.from_template("""

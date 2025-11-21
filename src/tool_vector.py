@@ -13,7 +13,9 @@ from langchain_core.output_parsers import StrOutputParser
 load_dotenv()
 
 client = QdrantClient(
-    url="http://10.11.39.33:6333"
+    # url=os.getenv("QDRANT_URL"), # Para Qdrant em nuvem
+    # api_key=os.getenv("QDRANT_API_KEY"), # Para Qdrant em nuvem
+    url="http://10.11.39.33:6333" # Para Qdrant local
 )
 print("Qdrant configurado com sucesso")
 

@@ -10,7 +10,40 @@ from fastembed import (
   TextEmbedding,
 )
 
+# from langchain_openai import ChatOpenAI 
+# from langchain_groq import ChatGroq 
+
 load_dotenv() #lembrar para poder ler o .env
+
+# Chaves usando Groq
+# try:
+#     groq_api_key = os.getenv("GROQ_API_KEY")
+#     os.environ["GROQ_API_KEY"] = groq_api_key
+#     print("Chave da API GROQ configurada com sucesso.")
+# except (ImportError, KeyError) as e:
+#     print("AVISO: Inserir chave de válida")
+    
+# llm = ChatGroq(
+#     model="llama-3.1-8b-instant", # Modelo de geração mais leve, llama-3.1-8b-instant
+#     temperature=0.1,
+#     groq_api_key=os.getenv("GROQ_API_KEY"),
+# )
+
+# Chaves usando Openai
+# try:
+#     openai_api_key = os.getenv("OPENAI_API_KEY") 
+#     os.environ["OPENAI_API_KEY"] = openai_api_key
+#     print("Chave da API Openai configurada com sucesso.")
+# except (ImportError, KeyError) as e:
+#     print("AVISO: Inserir chave de válida")
+    
+# llm = ChatOpenAI(f
+#     model="gpt-5-nano", 
+#     temperature=0.1,
+#     openai_api_key=os.getenv("OPENAI_API_KEY"),
+# )
+
+# Mesmo docker modelo e código
 
 # Definir pasta onde os modelos serão armazenados no HD
 MODEL_CACHE_DIR = "./model_cache"
