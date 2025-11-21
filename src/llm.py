@@ -64,9 +64,9 @@ print("Modelo esparso configurado com sucesso")
 llm = ChatOllama(
     model="llama3:8b", 
     temperature=0.1,
-    # Ele vai procurar por "http://localhost:11434" por padrão,
-    # e o Docker vai redirecionar para o container.
+    base_url="http://localhost:11434"
 )
+
 print("LLM (Ollama) rodando via Docker (no host) configurado.")
 
 # if __name__ == '__main__':
