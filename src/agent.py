@@ -8,7 +8,7 @@ from langchain_redis import RedisChatMessageHistory
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
-from llm import llm
+from llm import carregar_llm, mostrar_mensagem_notebook
 from tool_vector import find_chunk
 from llm_guard.input_scanners import PromptInjection, Secrets, TokenLimit
 from llm_guard.input_scanners.prompt_injection import MatchType 
@@ -19,36 +19,67 @@ import config_db
 
 load_dotenv()
 
-config = config_db.ConfigDB()
-env_db, url_bd, api_bd = config.obter_configs(banco_dados="redis")
+# =====================================================
+# 1) TENTAR CARREGAR O LLM (Ollama → OpenAI)
+# =====================================================
+try:
+    llm = carregar_llm()
+except RuntimeError:
+    llm = None
 
+# =====================================================
+# 2) PROMPT BASE DO CHAT
+# =====================================================
 chat_prompt = ChatPromptTemplate.from_messages(
     [
         ("system",  
          """
          Você é um assistente que responde perguntas sobre cidades inteligentes.
-         Seu conhecimento é baseado exclusivamente em cadernos técnicos criados pelo Instituto de Pesquisas Tecnológicas - IPT e pela Secretaria de Desenvolvimento Econômico do Estado de São Paulo - SDE.
-         Há cinco cadernos: 1.Conectividade, 2.Mobilidade Urbana, 3.Planejamento Urbano e Governança, 4.Segurança e 5.Serviços.
+         Seu conhecimento é baseado exclusivamente em cadernos técnicos do IPT e SDE:
+         1. Conectividade
+         2. Mobilidade Urbana
+         3. Planejamento Urbano e Governança
+         4. Segurança
+         5. Serviços.
          """),
         ("human", "{input}"),
     ]
 )
-
-chat = chat_prompt | llm | StrOutputParser()
-
-tools = [
-    Tool.from_function(
-        name="General Chat",
-        description="Use para conversas gerais e quando nenhuma outra ferramenta for apropriada.",
-        func=chat.invoke,
-    ), 
-    Tool.from_function(
-        name="Informações sobre cidades inteligentes presentes nos cadernos técnicos desenvolvidos pelo IPT e SDE",
-        description="Quando você precisa de informações específicas sobre conceitos e tecnologias de cidades inteligentes presentes nos Cadernos desenvolvidos pelo IPT e SDE",
-        func=find_chunk,
-    # Aqui podemos colocar outras tools se necessário, o agende vai decidir qual tool usar em função da pergunta 
-    ),
-]
+ 
+# Chat para conversas gerais
+if llm:
+    chat = chat_prompt | llm | StrOutputParser()
+else:
+    chat = None  # Será tratado abaixo
+ 
+ 
+# =====================================================
+# 3) TOOLS (Ferramentas disponíveis ao agente)
+# =====================================================
+tools = []
+ 
+if chat:
+    tools.append(
+        Tool.from_function(
+            name="General Chat",
+            description="Chat para assuntos gerais.",
+            func=chat.invoke,
+        )
+    )
+ 
+    tools.append(
+        Tool.from_function(
+            name="Informações sobre cidades inteligentes (cadernos IPT/SDE)",
+            description="Busca conteúdos dos cadernos técnicos.",
+            func=find_chunk,
+        )
+    )
+ 
+# =====================================================
+# 4) Memória do Chat (Redis)
+# =====================================================
+config = config_db.ConfigDB()
+env_db, url_bd, api_bd = config.obter_configs(banco_dados="redis")
 
 # # Memória do chat  
 def get_memory(session_id: str):
@@ -58,7 +89,10 @@ def get_memory(session_id: str):
         # redis_url = "redis://10.11.39.33:6379/0" # Para Redis local
         redis_url = url_bd
     )
-
+ 
+# =====================================================
+# 5) PROMPT DO AGENTE (REACTION)
+# =====================================================
 agent_prompt = PromptTemplate.from_template("""
 Você é um especialista em cidades inteligentes que deve responder exclusivamente a perguntas sobre os cadernos de cidades inteligentes do IPT e SDE.
 Suas instruções são:
@@ -101,66 +135,75 @@ Previous conversation history:
 New input: {input}
 {agent_scratchpad}
 """)
-
-agent = create_react_agent(llm, tools, agent_prompt)
-agent_executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    handle_parsing_errors=True,
-    verbose=True
+ 
+# =====================================================
+# 6) Criar o agente somente se o LLM carregou
+# =====================================================
+if llm:
+    agent = create_react_agent(llm, tools, agent_prompt)
+ 
+    agent_executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
+        handle_parsing_errors=True,
+        verbose=True
     )
-
-chat_agent = RunnableWithMessageHistory(
-    agent_executor,
-    get_memory,
-    input_messages_key="input",
-    history_messages_key="chat_history",
-)
-
-# Geração de resposta sem guardrails
-def generate_response(user_input: str, session_id: str):
-    """
-    Cria um handler que chama o agente conversacional
-    e retorna uma resposta 
-    """
+ 
+    chat_agent = RunnableWithMessageHistory(
+        agent_executor,
+        get_memory,
+        input_messages_key="input",
+        history_messages_key="chat_history",
+    )
+else:
+    chat_agent = None  # usado como fallback
+ 
+ 
+# =====================================================
+# 7) RESPOSTA COM E SEM GUARDRails
+# =====================================================
+def generate_response(user_input, session_id):
+    """Resposta sem guardrails."""
+    if chat_agent is None:
+        return mostrar_mensagem_notebook()
+ 
     response = chat_agent.invoke(
         {"input": user_input},
-        {"configurable": {"session_id": session_id}},)
-
-    return response['output']
-
-# Guardrails
+        {"configurable": {"session_id": session_id}},
+    )
+ 
+    return response["output"]
+ 
+ 
+# Guardrails scanners
 prompt_scanners = [
     PromptInjection(threshold=0.8, match_type=MatchType.FULL),
-    Secrets(),                         
-    TokenLimit(limit=256)       
+    Secrets(),
+    TokenLimit(limit=256),
 ]
-
+ 
+ 
 def generate_response_with_guardrails(user_input: str, session_id: str):
+ 
+    # Se nenhum modelo está disponível → fallback
+    if chat_agent is None:
+        return mostrar_mensagem_notebook()
+ 
+    # Aplicar guardrails
     sanitized_input, is_valid, results_score = scan_prompt(prompt_scanners, user_input)
-
-    if not all(is_valid.values()): # bloqueia e retorna motivo
-        return "Desculpe, não posso responder. A pergunta deve ser curta e sobre cidades inteligentes"
-            #"details": {"is_valid": is_valid, "scores": results_score}
-
+ 
+    if not all(is_valid.values()):
+        return "Desculpe, não posso responder. A pergunta deve ser curta e sobre cidades inteligentes."
+ 
+    # Invocar agente
     resp = chat_agent.invoke(
         {"input": sanitized_input},
         {"configurable": {"session_id": session_id}},
     )
-
-    # LangChain Agents normalmente retornam dict com 'output'; ajustar se for string
+ 
     return resp["output"] if isinstance(resp, dict) and "output" in resp else resp
 
-# # Teste sem guardraisls
 # import uuid
 # session_id = str(uuid.uuid4())
-# resposta = generate_response("O que é cidade inteligente?", session_id)
+# resposta = generate_response_with_guardrails("O que é cidade inteligente?", session_id)
 # print(resposta)
-
-# # Teste com guardraisls
-# import uuid
-# session_id = str(uuid.uuid4())
-# resposta = generate_response_with_guardrails("O que são cidades inteligentes?", session_id)
-# print(resposta) 
-
-

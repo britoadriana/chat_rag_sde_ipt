@@ -13,7 +13,8 @@ langchain-text-splitters==0.3.11
 langchain-qdrant==0.2.1
 langchain-redis==0.2.3
 langchain-pymupdf4llm==0.4.1
-langchain-ollama
+langchain_openai==0.3.35
+langchain-ollama==0.3.10
 
 # Dependências para alinhar com llm-guard
 transformers==4.51.3
