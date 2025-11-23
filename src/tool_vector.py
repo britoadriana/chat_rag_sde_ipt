@@ -32,9 +32,9 @@ collection_name = "SDE_REC"
 vector_store = QdrantVectorStore(
     client=client,
     collection_name=collection_name,
-    embedding=embedding_model,          # modelo denso
-    sparse_embedding=sparse_embeddings, # modelo esparço
-    retrieval_mode=RetrievalMode.HYBRID,#usar hibrido
+    embedding=embedding_model,           # modelo denso
+    sparse_embedding=sparse_embeddings,  # modelo esparço
+    retrieval_mode=RetrievalMode.HYBRID, # usar hibrido
     vector_name="dense",
     sparse_vector_name="sparse",
 )
@@ -54,7 +54,7 @@ def find_chunk(query: str):
     # context = "\n\n---\n\n".join([doc.page_content for doc in docs_scores])
     return docs_scores
  
-# Teste
+# Teste da classe:
 # query = "o que é cidade inteligente?"
 # chunks_retornados = find_chunk(query)
 # print(chunks_retornados)

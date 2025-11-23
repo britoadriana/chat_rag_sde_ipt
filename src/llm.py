@@ -2,6 +2,7 @@
 import os
 from dotenv import load_dotenv 
 from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from langchain_huggingface import HuggingFaceEmbeddings # embeddings - na versão final armazenar os modelos no servidor
 from langchain_qdrant import QdrantVectorStore, RetrievalMode # Qdrant
@@ -111,34 +112,55 @@ def carregar_llm():
  
     except Exception as e_ollama:
         print("Ollama falhou:", str(e_ollama))
+        
  
-        # 2) SE OLLAMA FALHAR → VERIFICA CHAVE OPENAI
-        openai_key = os.getenv("OPENAI_API_KEY")
+    # 2) SE OLLAMA FALHAR → VERIFICA CHAVE OPENAI
+    print("Tentando fallback para OpenAI...")
+    openai_key = os.getenv("OPENAI_API_KEY")
+
+    if not openai_key:
+        print("Nenhuma chave OPENAI_API_KEY encontrada.")
     
-        if not openai_key:
-            print("Nenhuma chave OPENAI_API_KEY encontrada.")
-            mostrar_mensagem_notebook()
-            raise RuntimeError("Nenhum modelo disponível.")
- 
- 
-        # 3) TENTAR OPENAI COMO SEGUNDA OPÇÃO
+    else:
         try:
-            print("Tentando fallback para OpenAI...")
-    
+
             llm = ChatOpenAI(
-                model="gpt-5-nano",
+                model="gpt-4-nano",
                 temperature=0.1,
                 openai_api_key=openai_key,
             )
-    
+
             print("OpenAI carregado com sucesso.")
             return llm
-    
+
         except Exception as e_openai:
             print("OpenAI também falhou:", str(e_openai))
-            mostrar_mensagem_notebook()
-            raise RuntimeError("Nenhum modelo disponível.")
-      
+    
+    # # 3) TENTAR GROQ COMO TERCEIRA OPÇÃO
+    # print("Tentando fallback para Groq...")
+    # groq_key = os.getenv("GROQ_API_KEY") 
+    
+    # if not groq_key:
+    #     print("Nenhuma chave GROQ_API_KEY encontrada.")   
+        
+    # else:
+    #     try:
+
+    #         llm = ChatGroq(
+    #             model="llama-3.1-8b-instant", # Modelo de geração mais leve, llama-3.1-8b-instant
+    #             temperature=0.1,
+    #             groq_api_key=os.getenv("GROQ_API_KEY"),
+    #         )
+            
+    #         print("Groq carregado com sucesso.")
+    #         return llm
+            
+    #     except Exception as e_groq:
+    #         print("Groq também falhou:", str(e_groq))
+
+    raise RuntimeError("Nenhum modelo disponível.")
+
+# Teste da classe:
 # llm = carregar_llm()
 # messages = [
 #     (
