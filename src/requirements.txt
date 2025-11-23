@@ -1,40 +1,24 @@
-# Dependências básicas
-numpy==2.3.5
-python-dotenv==1.2.1
-
-# Dependências do langchain
-langchain>=0.3.7,<0.4.0
+#Python 3.12
+# --- LangChain Ecosystem ---
+langchain==1.0.8
 langchain-community
-langchain-core
-langchain-experimental==0.3.4
-langchain-groq==0.3.8
-langchain-huggingface==0.3.1
-langchain-text-splitters==0.3.11
-langchain-qdrant==0.2.1
-langchain-redis==0.2.3
-langchain-pymupdf4llm==0.4.1
-langchain_openai==0.3.35
-langchain-ollama==0.3.10
+langchain-core==1.1.0
+langgraph==1.0.3
 
-# Dependências para alinhar com llm-guard
-transformers==4.51.3
-sentence-transformers==5.1.0
-fastembed==0.7.3
+# --- LLM Integrations (Model Providers) ---
+langchain-openai==1.0.3
+openai
+langchain-groq==1.0.1
+groq
+langchain-ollama==1.0.0
+ollama==0.6.1
+langchain-huggingface
+huggingface-hub
 
-# Outras dependências do modelo
-pydantic==2.11.7
-pydantic-settings==2.10.1
-redis==6.4.0
-llm-guard==0.3.16
+# --- Vector Databases & Graph DBs ---
+qdrant-client==1.15.0
+redis==7.1.0
 
-# Dependências para API
-Flask==3.1.2
-gunicorn==23.0.0
-
-# Dependência inutilizadas
-# streamlit==1.51.0
-# fastapi==0.121.2
-# uvicorn[standard]==0.38.0
-# faiss-cpu== 1.13.0
-# beautifulsoup4==4.14.2
-# pytesseract==0.3.13
+# --- Utilities & Cloud ---
+python-dotenv==1.1.0
+requests==2.32.5

@@ -3,7 +3,7 @@ import os
 import uuid
 
 from flask import Flask, request, jsonify
-from agent import generate_response_with_guardrails
+from agent_lan import generate_response_with_guardrails
 
 # Cria a instância da aplicação Flask
 api = Flask(__name__)
