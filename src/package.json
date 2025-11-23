@@ -14,3 +14,5 @@ QDRANT_URL_DEV="http://10.11.39.33:6333"
 REDIS_URL_DEV="redis://10.11.39.33:6379/0" # host:porta/dbnumber (número do banco dentro da instancia)
 
 OPENAI_API_KEY="inserir-aqui"
+
+GROQ_API_KEY = "inserir-aqui"
