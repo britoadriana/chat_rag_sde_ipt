@@ -112,33 +112,32 @@ def carregar_llm():
     except Exception as e_ollama:
         print("Ollama falhou:", str(e_ollama))
  
+        # 2) SE OLLAMA FALHAR → VERIFICA CHAVE OPENAI
+        openai_key = os.getenv("OPENAI_API_KEY")
+    
+        if not openai_key:
+            print("Nenhuma chave OPENAI_API_KEY encontrada.")
+            mostrar_mensagem_notebook()
+            raise RuntimeError("Nenhum modelo disponível.")
  
-    # 2) SE OLLAMA FALHAR → VERIFICA CHAVE OPENAI
-    openai_key = os.getenv("OPENAI_API_KEY")
  
-    if not openai_key:
-        print("Nenhuma chave OPENAI_API_KEY encontrada.")
-        mostrar_mensagem_notebook()
-        raise RuntimeError("Nenhum modelo disponível.")
- 
- 
-    # 3) TENTAR OPENAI COMO SEGUNDA OPÇÃO
-    try:
-        print("Tentando fallback para OpenAI...")
- 
-        llm = ChatOpenAI(
-            model="gpt-5-nano",
-            temperature=0.1,
-            openai_api_key=openai_key,
-        )
- 
-        print("OpenAI carregado com sucesso.")
-        return llm
- 
-    except Exception as e_openai:
-        print("OpenAI também falhou:", str(e_openai))
-        mostrar_mensagem_notebook()
-        raise RuntimeError("Nenhum modelo disponível.")
+        # 3) TENTAR OPENAI COMO SEGUNDA OPÇÃO
+        try:
+            print("Tentando fallback para OpenAI...")
+    
+            llm = ChatOpenAI(
+                model="gpt-5-nano",
+                temperature=0.1,
+                openai_api_key=openai_key,
+            )
+    
+            print("OpenAI carregado com sucesso.")
+            return llm
+    
+        except Exception as e_openai:
+            print("OpenAI também falhou:", str(e_openai))
+            mostrar_mensagem_notebook()
+            raise RuntimeError("Nenhum modelo disponível.")
       
 # llm = carregar_llm()
 # messages = [
