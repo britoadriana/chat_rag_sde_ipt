@@ -3,7 +3,7 @@ import os
 import uuid
 
 from flask import Flask, request, jsonify
-from agent_lan import generate_response_with_guardrails
+from agent_lan import generate_response
 
 # Cria a instância da aplicação Flask
 api = Flask(__name__)
@@ -26,7 +26,7 @@ def processar_endpoint():
     try:
         # Chama a rotina de processamento com a query recebida
         session_id = str(uuid.uuid4())
-        response_string = generate_response_with_guardrails(input_query, session_id)
+        response_string = generate_response(input_query, session_id)
 
         # Prepara e retornar a resposta em formato JSON
         return jsonify({"resposta": response_string})

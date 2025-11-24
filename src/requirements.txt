@@ -4,6 +4,7 @@ langchain==1.0.8
 langchain-community
 langchain-core==1.1.0
 langgraph==1.0.3
+langchain-qdrant
 
 # --- LLM Integrations (Model Providers) ---
 langchain-openai==1.0.3
@@ -18,7 +19,10 @@ huggingface-hub
 # --- Vector Databases & Graph DBs ---
 qdrant-client==1.15.0
 redis==7.1.0
+fastembed==0.7.3
 
 # --- Utilities & Cloud ---
+llm-guard==0.3.16
+sentence-transformers==5.1.0
 python-dotenv==1.1.0
 requests==2.32.5

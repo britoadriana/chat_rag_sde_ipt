@@ -18,36 +18,6 @@ import concurrent.futures
 
 load_dotenv() #lembrar para poder ler o .env
 
-# FORMAS SEPARADAS DE CHAMAR LLM: CHAMADA POR CADA GERENCIADOR
-
-# Chaves usando Groq
-# try:
-#     groq_api_key = os.getenv("GROQ_API_KEY")
-#     os.environ["GROQ_API_KEY"] = groq_api_key
-#     print("Chave da API GROQ configurada com sucesso.")
-# except (ImportError, KeyError) as e:
-#     print("AVISO: Inserir chave de válida")
-    
-# llm = ChatGroq(
-#     model="llama-3.1-8b-instant", # Modelo de geração mais leve, llama-3.1-8b-instant
-#     temperature=0.1,
-#     groq_api_key=os.getenv("GROQ_API_KEY"),
-# )
-
-# Chaves usando Openai
-# try:
-#     openai_api_key = os.getenv("OPENAI_API_KEY") 
-#     os.environ["OPENAI_API_KEY"] = openai_api_key
-#     print("Chave da API Openai configurada com sucesso.")
-# except (ImportError, KeyError) as e:
-#     print("AVISO: Inserir chave de válida")
-    
-# llm = ChatOpenAI(f
-#     model="gpt-5-nano", 
-#     temperature=0.1,
-#     openai_api_key=os.getenv("OPENAI_API_KEY"),
-# )
-
 # Mesmo docker modelo e código
 
 # Definir pasta onde os modelos serão armazenados no HD
@@ -64,13 +34,6 @@ print("Modelo denso configurado com sucesso")
 # Modelo esparso
 sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25") #função matemática BM25, que classifica documentos com base na relevância em relação a uma consulta de pesquisa.
 print("Modelo esparso configurado com sucesso")
-
-# Mesmo docker modelo e código
-# llm = ChatOllama(
-#     model="llama3:8b", 
-#     temperature=0.1,
-#     base_url="http://localhost:11434"
-# )
 
 # print("LLM (Ollama) rodando via Docker (no host) configurado.")
 
@@ -125,7 +88,7 @@ def carregar_llm():
         try:
 
             llm = ChatOpenAI(
-                model="gpt-4-nano",
+                model="gpt-5-nano",
                 temperature=0.1,
                 openai_api_key=openai_key,
             )
