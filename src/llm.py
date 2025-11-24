@@ -77,27 +77,27 @@ def carregar_llm():
         print("Ollama falhou:", str(e_ollama))
         
  
-    # 2) SE OLLAMA FALHAR → VERIFICA CHAVE OPENAI
-    print("Tentando fallback para OpenAI...")
-    openai_key = os.getenv("OPENAI_API_KEY")
+    # # 2) SE OLLAMA FALHAR → VERIFICA CHAVE OPENAI
+    # print("Tentando fallback para OpenAI...")
+    # openai_key = os.getenv("OPENAI_API_KEY")
 
-    if not openai_key:
-        print("Nenhuma chave OPENAI_API_KEY encontrada.")
+    # if not openai_key:
+    #     print("Nenhuma chave OPENAI_API_KEY encontrada.")
     
-    else:
-        try:
+    # else:
+    #     try:
 
-            llm = ChatOpenAI(
-                model="gpt-5-nano",
-                temperature=0.1,
-                openai_api_key=openai_key,
-            )
+    #         llm = ChatOpenAI(
+    #             model="gpt-5-nano",
+    #             temperature=0.1,
+    #             openai_api_key=openai_key,
+    #         )
 
-            print("OpenAI carregado com sucesso.")
-            return llm
+    #         print("OpenAI carregado com sucesso.")
+    #         return llm
 
-        except Exception as e_openai:
-            print("OpenAI também falhou:", str(e_openai))
+    #     except Exception as e_openai:
+    #         print("OpenAI também falhou:", str(e_openai))
     
     # # 3) TENTAR GROQ COMO TERCEIRA OPÇÃO
     # print("Tentando fallback para Groq...")
