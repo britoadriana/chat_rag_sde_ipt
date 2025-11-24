@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12.12
 
 WORKDIR /api
 
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 9593
 
 # Comando para iniciar a aplicação
-CMD ["gunicorn", "--bind", "0.0.0.0:9592", "api:api"]
+CMD ["gunicorn", "--bind", "0.0.0.0:9593", "api:api"]
