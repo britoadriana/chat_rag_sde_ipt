@@ -30,7 +30,7 @@ except Exception as e:
 
 def check_llm_available():
     if not llm:
-        return "Sistema temporariamente indisponivel. Aproveite para ver o notebooklm do projeto em https://notebooklm.google.com/notebook/93d397f0-204b-4d55-93ee-8a609a6a1c79?authuser=3"
+        return "Sistema temporariamente indisponivel."
     return None
 
 # ========== CONEXÃO REDIS SIMPLES ==========
