@@ -59,7 +59,7 @@ def carregar_llm():
  
         llm = ChatOllama(
             base_url="http://localhost:11434",  # ou localhost
-            model="llama3:8b",
+            model="gemma3:4b",
             temperature=0.1,
         )
  
