@@ -11,6 +11,8 @@ from fastembed import (
   SparseTextEmbedding,
   TextEmbedding,
 )
+import torch
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 import concurrent.futures
 
 # from langchain_openai import ChatOpenAI 
@@ -28,28 +30,8 @@ os.environ["HUGGINGFACE_HUB_CACHE"] = MODEL_CACHE_DIR
 os.environ["FASTEMBED_CACHE_PATH"] = os.path.join(MODEL_CACHE_DIR, "fastembed")
 
 print("Cache configurado para:", MODEL_CACHE_DIR)
-# Modelo denso
-embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2")
-print("Modelo denso configurado com sucesso")
-# Modelo esparso
-sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25") #função matemática BM25, que classifica documentos com base na relevância em relação a uma consulta de pesquisa.
-print("Modelo esparso configurado com sucesso")
-
-# print("LLM (Ollama) rodando via Docker (no host) configurado.")
 
 # FORMA HÍBRIDA DE CHAMAR LLM: TENTATIVAS SEQUENCIAIS DE RODAR LLM POR CADA GERENCIADOR, 1 POR VEZ
-
-def mostrar_mensagem_notebook():
-    print("""
-Oops! Estamos com problemas por aqui. Por favor, tente mais tarde.
- 
-Enquanto isso, você pode usar o nosso NotebookLM:
-https://notebooklm.google.com/notebook/93d397f0-204b--4d55-93ee-8a609a6a1c79?authuser=3
- 
-Lá você pode explorar não só o conteúdo dos cadernos desenvolvidos pelo IPT e SDE,
-mas também gerar mapas mentais, resumos em áudio e vídeo.
-""")
- 
  
 def carregar_llm():
  
@@ -122,6 +104,32 @@ def carregar_llm():
     #         print("Groq também falhou:", str(e_groq))
 
     raise RuntimeError("Nenhum modelo disponível.")
+
+# Modelo denso
+embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2")
+print("Modelo denso configurado com sucesso")
+
+# Modelo esparso
+sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25") #função matemática BM25, que classifica documentos com base na relevância em relação a uma consulta de pesquisa.
+print("Modelo esparso configurado com sucesso")
+
+# Modelo Guardrails - Prompt Injection 
+tokenizer = AutoTokenizer.from_pretrained("protectai/deberta-v3-base-prompt-injection-v2",
+    cache_dir=MODEL_CACHE_DIR)
+
+pi_model = AutoModelForSequenceClassification.from_pretrained(
+    "protectai/deberta-v3-base-prompt-injection-v2",
+    use_safetensors=True
+)
+
+# DECIDIR CPU OU GPU 
+# device = "cuda" if torch.cuda.is_available() else "cpu"  # Escolhe automaticamente
+device = "cpu"  # Forçar CPU
+# device = "cuda"  # Forçar GPU
+
+# Mover modelo para o dispositivo escolhido
+model = pi_model.to(device)
+print(f"Modelo guardrails carregado em: {device}")
 
 # Teste da classe:
 # llm = carregar_llm()

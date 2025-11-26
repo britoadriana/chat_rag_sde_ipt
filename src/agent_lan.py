@@ -40,7 +40,7 @@ env_db, url_bd, api_bd = config.obter_configs(banco_dados="redis")
 def get_redis_client():
     """Cria cliente Redis simples"""
     return redis.Redis.from_url(
-        os.getenv("REDIS_URL"),
+        url= url_bd,
         decode_responses=True
     )
 
@@ -302,9 +302,8 @@ agent_graph = create_agent_graph()
 
 # ========== GUARDRAILS ==========
 prompt_scanners = [
-    PromptInjection(threshold=0.8, match_type=MatchType.FULL),
-    Secrets(),                         
-    TokenLimit(limit=2048)
+    PromptInjection(threshold=0.92, match_type=MatchType.FULL),                    
+    TokenLimit(limit=1024)
 ]
 
 # ========== INTERFACE PRINCIPAL ==========
