@@ -385,13 +385,3 @@ def clear_chat_history(session_id: str = "default"):
 #         if history and len(history) >= 2:
 #             last_ai_msg = [msg for msg in history if isinstance(msg, AIMessage)][-1]
 #             print(f" Decisão armazenada no histórico")
-
-
-
-
-
-
-
-
-
-
