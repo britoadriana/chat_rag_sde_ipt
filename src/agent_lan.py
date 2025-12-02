@@ -13,7 +13,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 from llm import carregar_llm
 from tool_vector import find_chunk
-from llm_guard.input_scanners import PromptInjection, Secrets, TokenLimit
+from llm_guard.input_scanners import PromptInjection, TokenLimit
 from llm_guard.input_scanners.prompt_injection import MatchType 
 from llm_guard import scan_prompt
 import config_db
